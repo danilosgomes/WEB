@@ -6,6 +6,7 @@ import PokemonCard from "../Card/PokemonCard";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
+
 const Pokemon = () => {
   axios.defaults.timeout = 10000;
   const [pokemons, setPokemons] = useState([]);
@@ -54,7 +55,7 @@ const Pokemon = () => {
 
   const getPokemons = async () => {
     const endpoints = [];
-    for (let i = 1; i < 1000; i++) {
+    for (let i = 1; i < 600; i++) {
       endpoints.push(`https://pokeapi.co/api/v2/pokemon/${i}/`);
     }
 

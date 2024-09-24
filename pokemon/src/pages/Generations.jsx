@@ -19,7 +19,7 @@ const Generations = () => {
   const getPokemons = () => {
     const endpoints = [];
 
-    for (let i = 1; i < 900; i++) {
+    for (let i = 1; i < 400; i++) {
       endpoints.push(`https://pokeapi.co/api/v2/pokemon/${i}/`);
     }
 
