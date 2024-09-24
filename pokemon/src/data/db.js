@@ -1,4 +1,5 @@
 const db = [
+  
   { id: 1, name: "Pokédex Kanto" },
   { id: 2, name: "Pokédex Johto" },
   { id: 3, name: "Pokédex Hoenn" },

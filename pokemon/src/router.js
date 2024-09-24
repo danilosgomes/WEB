@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Pokemon from "./pages/Pokemon";
 import Pokedex from "./pages/Pokedex";
 import Generations from "./pages/Generations";
+import PokedexDetail from "./pages/PokedexDetail"; // Importando o componente PokedexDetail
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
       {
         path: "geracoes",
         element: <Generations />,
+      },
+      {
+        path: "pokedex/:name",
+        element: <PokedexDetail />, // Componente para exibir detalhes da Pokédex
       },
     ],
   },
