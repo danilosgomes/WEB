@@ -7,6 +7,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 const Generations = () => {
+  axios.defaults.timeout = 10000; // 10 segundos
+
   const [pokemons, setPokemons] = useState([]);
   const [filteredPokemons, setFilteredPokemons] = useState([]);
 
@@ -17,7 +19,7 @@ const Generations = () => {
   const getPokemons = () => {
     const endpoints = [];
 
-    for (let i = 1; i < 50; i++) {
+    for (let i = 1; i < 900; i++) {
       endpoints.push(`https://pokeapi.co/api/v2/pokemon/${i}/`);
     }
 
@@ -177,7 +179,7 @@ const Generations = () => {
             style={{ marginBottom: "10px" }}
             onClick={() => filterByGeneration(0)}
           >
-          Todos
+            Todos
           </button>
           <button
             className="btn btn-primary me-2"

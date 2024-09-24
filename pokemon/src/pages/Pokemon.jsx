@@ -7,7 +7,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 const Pokemon = () => {
-  
+  axios.defaults.timeout = 10000; // 10 segundos
+
   const [pokemons, setPokemons] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredPokemons, setFilteredPokemons] = useState([]);
@@ -31,7 +32,7 @@ const Pokemon = () => {
   const getPokemons = () => {
     const endpoints = [];
 
-    for (let i = 1; i < 50; i++) {
+    for (let i = 1; i < 1000; i++) {
       endpoints.push(`https://pokeapi.co/api/v2/pokemon/${i}/`);
     }
 
@@ -79,12 +80,7 @@ const Pokemon = () => {
           }}
         >
           <a aria-current="page" href="http://localhost:3000">
-            <img
-              src={pokemonImage}
-              alt="Pokémon"
-              width="112"
-              height="41"
-            />
+            <img src={pokemonImage} alt="Pokémon" width="112" height="41" />
           </a>
           <button
             className="navbar-toggler"
