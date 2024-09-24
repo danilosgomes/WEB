@@ -7,10 +7,11 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 const Pokemon = () => {
-  axios.defaults.timeout = 10000; // 10 segundos
-
+  axios.defaults.timeout = 10000;
   const [pokemons, setPokemons] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("");
+  const [sortDirection, setSortDirection] = useState("asc");
   const [filteredPokemons, setFilteredPokemons] = useState([]);
 
   useEffect(() => {
@@ -18,66 +19,85 @@ const Pokemon = () => {
   }, []);
 
   useEffect(() => {
-    // Filtra os pokémons conforme o termo de busca muda
-    if (searchTerm === "") {
-      setFilteredPokemons(pokemons); // Exibe todos se a busca estiver vazia
-    } else {
-      const filtered = pokemons.filter((pokemon) =>
+    let filtered = pokemons;
+
+    // Filtro por nome
+    if (searchTerm) {
+      filtered = filtered.filter((pokemon) =>
         pokemon.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      setFilteredPokemons(filtered);
     }
-  }, [searchTerm, pokemons]);
 
-  const getPokemons = () => {
+    // Ordenação
+    if (sortBy) {
+      filtered = [...filtered].sort((a, b) => {
+        let comparison = 0;
+        if (sortBy === "name") {
+          comparison = a.name.localeCompare(b.name);
+        } else if (sortBy === "life") {
+          comparison = a.stats[0].base_stat - b.stats[0].base_stat;
+        } else if (sortBy === "attack") {
+          comparison = a.stats[1].base_stat - b.stats[1].base_stat;
+        } else if (sortBy === "defense") {
+          comparison = a.stats[2].base_stat - b.stats[2].base_stat;
+        } else if (sortBy === "speed") {
+          comparison = a.stats[5].base_stat - b.stats[5].base_stat;
+        } else if (sortBy === "id") {
+          comparison = a.id - b.id;
+        }
+        return sortDirection === "asc" ? comparison : -comparison;
+      });
+    }
+
+    setFilteredPokemons(filtered);
+  }, [searchTerm, pokemons, sortBy, sortDirection]);
+
+  const getPokemons = async () => {
     const endpoints = [];
-
     for (let i = 1; i < 1000; i++) {
       endpoints.push(`https://pokeapi.co/api/v2/pokemon/${i}/`);
     }
 
-    Promise.all(
-      endpoints.map((endpoint) =>
-        axios
-          .get(endpoint)
-          .then((res) => res.data)
-          .catch((err) => {
-            console.log(err);
-            return null;
-          })
-      )
-    ).then((results) => {
+    try {
+      const results = await Promise.all(
+        endpoints.map((endpoint) =>
+          axios
+            .get(endpoint)
+            .then((res) => res.data)
+            .catch((err) => {
+              console.log(err);
+              return null;
+            })
+        )
+      );
+
       const validPokemons = results.filter((result) => result !== null);
       setPokemons(validPokemons);
       setFilteredPokemons(validPokemons); // Inicializa com todos os pokémons
-    });
+    } catch (error) {
+      console.error("Erro ao buscar pokémons:", error);
+    }
+  };
+
+  const handleSort = (sortKey) => {
+    if (sortBy === sortKey) {
+      setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+    } else {
+      setSortBy(sortKey);
+      setSortDirection("asc");
+    }
   };
 
   return (
-    <div
-      className="background-container"
-      style={{
-        overflowY: "auto",
-      }}
-    >
+    <div className="background-container" style={{ overflowY: "auto" }}>
       <nav
-        className="navbar navbar-expand-xxl bg-body-tertiar"
-        style={{
-          backgroundColor: "#222",
-          marginLeft: "320px",
-          marginRight: "320px",
-          padding: "10px",
-        }}
+        className="navbar navbar-expand-xxl bg-body-tertiary"
+        style={{ backgroundColor: "#222", margin: "0 320px", padding: "10px" }}
         data-bs-theme="dark"
       >
         <div
           className="container-fluid position-relative"
-          style={{
-            maxWidth: "1200px",
-            padding: "0",
-            marginLeft: "40px",
-            marginRight: "40px",
-          }}
+          style={{ maxWidth: "1200px", padding: "0 40px" }}
         >
           <a aria-current="page" href="http://localhost:3000">
             <img src={pokemonImage} alt="Pokémon" width="112" height="41" />
@@ -120,15 +140,12 @@ const Pokemon = () => {
         </div>
       </nav>
 
-      {/* ----- */}
-
       <div
         className="text-center"
         style={{
           backgroundColor: "#B0B0B0",
           paddingTop: "120px",
-          marginLeft: "320px",
-          marginRight: "320px",
+          margin: "0 320px",
           overflow: "auto",
           height: "93.4%",
         }}
@@ -136,17 +153,14 @@ const Pokemon = () => {
         <img
           src={pokemonImage}
           alt="Pokemon Logo"
-          style={{
-            height: "160px",
-          }}
+          style={{ height: "160px" }}
         />
         <div
           className="text-center form-group"
           style={{
             paddingTop: "40px",
-            paddingBottom: "40px",
-            marginLeft: "320px",
-            marginRight: "320px",
+            paddingBottom: "20px",
+            margin: "0 320px",
           }}
         >
           <input
@@ -157,25 +171,76 @@ const Pokemon = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
+          <div
+            className="d-flex justify-content-center mb-3"
+            style={{ marginTop: "20px" }}
+          >
+            <div className="btn-group" role="group" aria-label="Filtros">
+              <button
+                type="button"
+                className={`btn btn-secondary ${
+                  sortBy === "id" ? "active" : ""
+                }`}
+                onClick={() => handleSort("id")}
+              >
+                ID
+              </button>
+              <button
+                type="button"
+                className={`btn btn-secondary ${
+                  sortBy === "name" ? "active" : ""
+                }`}
+                onClick={() => handleSort("name")}
+              >
+                Nome
+              </button>
+              <button
+                type="button"
+                className={`btn btn-secondary ${
+                  sortBy === "life" ? "active" : ""
+                }`}
+                onClick={() => handleSort("life")}
+              >
+                Vida
+              </button>
+              <button
+                type="button"
+                className={`btn btn-secondary ${
+                  sortBy === "attack" ? "active" : ""
+                }`}
+                onClick={() => handleSort("attack")}
+              >
+                Ataque
+              </button>
+              <button
+                type="button"
+                className={`btn btn-secondary ${
+                  sortBy === "speed" ? "active" : ""
+                }`}
+                onClick={() => handleSort("speed")}
+              >
+                Velocidade
+              </button>
+            </div>
+          </div>
         </div>
         <div
           className="container"
           style={{
             display: "flex",
             flexWrap: "wrap",
-            justifyContent: "flex-start", // Alinha os cards à esquerda
-            padding: "10px", // Adiciona um pouco de espaço interno
+            justifyContent: "flex-start",
           }}
         >
-          {filteredPokemons.map((pokemon, index) => (
+          {filteredPokemons.map((pokemon) => (
             <div
               style={{
                 margin: "10px",
                 display: "flex",
                 flexDirection: "column",
-                alignItems: "center", // Centraliza os cards
+                alignItems: "center",
               }}
-              key={index}
+              key={pokemon.id}
             >
               <PokemonCard
                 id={pokemon.id}
