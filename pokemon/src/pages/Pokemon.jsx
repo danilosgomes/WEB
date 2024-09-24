@@ -31,7 +31,7 @@ const Pokemon = () => {
   const getPokemons = () => {
     const endpoints = [];
 
-    for (let i = 1; i < 200; i++) {
+    for (let i = 1; i < 50; i++) {
       endpoints.push(`https://pokeapi.co/api/v2/pokemon/${i}/`);
     }
 
@@ -80,7 +80,7 @@ const Pokemon = () => {
         >
           <a aria-current="page" href="http://localhost:3000">
             <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/International_Pok%C3%A9mon_logo.svg/640px-International_Pok%C3%A9mon_logo.svg.png"
+              src={pokemonImage}
               alt="Pokémon"
               width="112"
               height="41"
@@ -110,12 +110,12 @@ const Pokemon = () => {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link fs-5" to="#">
+                <Link className="nav-link fs-5" to="/geracoes">
                   Gerações
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link fs-5" to="#">
+                <Link className="nav-link fs-5" to="/pokedex">
                   Pokédex
                 </Link>
               </li>
@@ -162,26 +162,40 @@ const Pokemon = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <div className="container">
-          <div className="row">
-            {filteredPokemons.map((pokemon, index) => (
-              <div className="col mb-3" key={index}>
-                <PokemonCard
-                  id={pokemon.id}
-                  name={pokemon.name}
-                  img={pokemon.sprites.front_default}
-                  life={pokemon.stats[0].base_stat}
-                  atk={pokemon.stats[1].base_stat}
-                  shild={pokemon.stats[2].base_stat}
-                  speed={pokemon.stats[5].base_stat}
-                  type={pokemon.types[0].type.name}
-                  type2={
-                    pokemon.types.length > 1 ? pokemon.types[1].type.name : null
-                  }
-                />
-              </div>
-            ))}
-          </div>
+        <div
+          className="container"
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "flex-start", // Alinha os cards à esquerda
+            padding: "10px", // Adiciona um pouco de espaço interno
+          }}
+        >
+          {filteredPokemons.map((pokemon, index) => (
+            <div
+              style={{
+                margin: "10px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center", // Centraliza os cards
+              }}
+              key={index}
+            >
+              <PokemonCard
+                id={pokemon.id}
+                name={pokemon.name}
+                img={pokemon.sprites.front_default}
+                life={pokemon.stats[0].base_stat}
+                atk={pokemon.stats[1].base_stat}
+                shild={pokemon.stats[2].base_stat}
+                speed={pokemon.stats[5].base_stat}
+                type={pokemon.types[0].type.name}
+                type2={
+                  pokemon.types.length > 1 ? pokemon.types[1].type.name : null
+                }
+              />
+            </div>
+          ))}
         </div>
       </div>
     </div>

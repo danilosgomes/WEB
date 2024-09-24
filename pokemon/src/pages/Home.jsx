@@ -57,12 +57,12 @@ const Home = () => {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link fs-5" to="#">
+                <Link className="nav-link fs-5" to="/geracoes">
                   Gerações
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link fs-5" to="#">
+                <Link className="nav-link fs-5" to="/pokedex">
                   Pokédex
                 </Link>
               </li>

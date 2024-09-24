@@ -24,7 +24,7 @@ const router = createBrowserRouter([
         element: <Pokedex />,
       },
       {
-        path: "generations",
+        path: "geracoes",
         element: <Generations />,
       },
     ],
