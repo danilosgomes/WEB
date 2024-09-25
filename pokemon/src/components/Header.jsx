@@ -60,7 +60,7 @@ const Header = () => {
                             </Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link fs-5" to="/myPokedex">
+                            <Link className="nav-link fs-5" to="/pokedex">
                                 Pokédex
                             </Link>
                         </li>
