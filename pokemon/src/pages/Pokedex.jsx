@@ -1,144 +1,107 @@
 import "bootstrap/dist/css/bootstrap.css";
 import "../css/App.css";
-import { Link } from "react-router-dom";
 import { useState } from "react";
-import pokemonImage from "../assets/International_Pokémon_logo.svg.png";
 import Header from "../components/Header";
+import styled from "styled-components";
 
-const Pokedex = () => {
-  // Dados fictícios da Pokédex
-  const [pokedexes, setPokedexes] = useState([
-    { id: 1, name: "Kanto" },
-    { id: 2, name: "Johto" },
-    { id: 3, name: "Hoenn" },
-    { id: 4, name: "Sinnoh" },
-    { id: 5, name: "Unova" },
-    { id: 6, name: "Kalos" },
-    { id: 7, name: "Alola" },
-    { id: 8, name: "Galar" },
-  ]);
+const MyPokedex = () => {
+    const [elements, setElements] = useState([]);
+    const [inputValue, setInputValue] = useState('');
 
-  // Estado para controle da nova Pokédex
-  const [newPokedexName, setNewPokedexName] = useState("");
-  const [isCreating, setIsCreating] = useState(false);
+    const addElement = () => {
+        if (inputValue.trim() !== '') {
+            const newElement = {
+                id: Date.now(),
+                col1: inputValue,
+            };
+            setElements([...elements, newElement]);
+            setInputValue('');
+        }
+    };
 
-  // Função para adicionar uma nova Pokédex
-  const handleCreatePokedex = () => {
-    if (newPokedexName.trim()) {
-      setPokedexes([
-        ...pokedexes,
-        { id: pokedexes.length + 1, name: newPokedexName },
-      ]);
-      setNewPokedexName("");
-      setIsCreating(false);
-    } else {
-      alert("Por favor, insira um nome para a Pokédex.");
-    }
-  };
+    const removeElement = (id) => {
+        setElements(elements.filter(element => element.id !== id));
+    };
+    const Table = styled.table`
+  width: 100%;
+  border-collapse: collapse;
 
-  return (
-    <div
-      className="background-container"
-      style={{
-        overflowY: "auto",
-      }}
-    >
-      {/* Menu de Navegação */}
-      <Header />
-      {/* Corpo da página */}
-      <div
-        className="text-center"
-        style={{
-          backgroundColor: "#B0B0B0",
-          paddingTop: "80px",
-          marginLeft: "320px",
-          marginRight: "320px",
-          overflow: "auto",
-          height: "93.4%",
-        }}
-      >
-        <h1
-          className="d-flex justify-content-start mb-4"
-          style={{ marginLeft: "50px" }}
-        >
-          Pokédex
-        </h1>
-        {/* Botão de adicionar Pokédex */}
-        <div
-          className="d-flex justify-content-start mb-3"
-          style={{ marginLeft: "50px" }}
-        >
-          <button
-            className="btn btn-primary"
-            onClick={() => setIsCreating(true)}
-          >
-            Criar
-          </button>
-        </div>
-        {/* Campo para criar nova Pokédex */}
-        {isCreating && (
-          <div style={{ marginLeft: "50px", marginBottom: "20px" }}>
-            <input
-              type="text"
-              placeholder="Nome da nova Pokédex"
-              value={newPokedexName}
-              onChange={(e) => setNewPokedexName(e.target.value)}
-              style={{
-                padding: "10px",
-                marginRight: "10px",
-                borderRadius: "4px",
-                border: "1px solid #ccc",
-              }}
-            />
-            <button className="btn btn-success" onClick={handleCreatePokedex}>
-              OK
-            </button>
-            <button
-              className="btn btn-danger"
-              onClick={() => setIsCreating(false)}
-              style={{ marginLeft: "10px" }}
+  td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+
+  tr:hover {
+    background-color: #ddd;
+  }
+
+  th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #4CAF50;
+    color: white;
+  }
+`;
+    return (
+        <div className="background-container"
+            style={{
+                overflowY: "auto",
+            }}>
+            <Header />
+            <div
+                className="text-center"
+                style={{
+                    backgroundColor: "#B0B0B0",
+                    paddingTop: "80px",
+                    marginLeft: "320px",
+                    marginRight: "320px",
+                    overflow: "auto",
+                    height: "91.4%",
+                }}
             >
-              Cancelar
-            </button>
-          </div>
-        )}
-        <hr style={{ margin: "50px" }} />
 
-        {/* Listagem das Pokédexes em linhas e colunas */}
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "flex-start",
-            gap: "20px",
-            marginLeft: "50px",
-            marginRight: "50px",
-          }}
-        >
-          {pokedexes.map((pokedex) => (
-            <Link
-              key={pokedex.id}
-              to={`/pokedex/${pokedex.name}`} // Atualizado para passar o nome da Pokédex
-              style={{
-                flex: "1 1 calc(33.33% - 20px)", // 3 colunas por linha
-                maxWidth: "calc(33.33% - 20px)",
-                backgroundColor: "#fff",
-                borderRadius: "8px",
-                textAlign: "center",
-                padding: "20px",
-                cursor: "pointer",
-                textDecoration: "none", // Remove underline
-                color: "inherit", // Mantém a cor do texto
-                transition: "transform 0.3s ease",
-              }}
-            >
-              <h5 style={{ margin: "0" }}>{pokedex.name}</h5>
-            </Link>
-          ))}
+                <h2
+                    style={{
+                        maxWidth: "420px",
+                        margin: "0",
+                        fontSize: "32px",
+                        fontWeight: 800,
+                        lineHeight: 1.4,
+                    }}
+                >
+                    Minha Pokédex
+                </h2>
+                <div className="input-group mb-3 w-75 mx-auto">
+                    <input type="text"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    placeholder="Nome Pokédex" className="form-control" aria-label="Nome Pokédex" aria-describedby="button-addon2"/>
+                        <button onClick={addElement} className="btn btn-outline-secondary" type="button" id="button-addon2">Criar</button>
+                        <button onClick={(e) => setInputValue('')} className="btn btn-outline-secondary" type="button">Cancelar</button> 
+                </div>
+                <Table>
+                    <tbody>
+                        {elements.map((element, index) => (
+                            <tr key={index}>
+                                <td>{element.col1}</td>
+                                <td>
+                                    <button onClick={() => removeElement(element.id)} className="btn btn-danger">Remover</button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </Table>
+            </div>
         </div>
-      </div>
-    </div>
-  );
-};
 
-export default Pokedex;
+    );
+
+
+}
+
+export default MyPokedex;
