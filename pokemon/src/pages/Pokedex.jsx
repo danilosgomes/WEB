@@ -22,23 +22,59 @@ const Pokedex = () => {
   // Estado para controle da nova Pokédex
   const [newPokedexName, setNewPokedexName] = useState("");
   const [isCreating, setIsCreating] = useState(false);
+  const [editId, setEditId] = useState(null);
 
   // Função para adicionar uma nova Pokédex
   const handleCreatePokedex = () => {
     if (newPokedexName.trim()) {
-      setPokedexes([
-        ...pokedexes,
-        { id: pokedexes.length + 1, name: newPokedexName },
-      ]);
-      setNewPokedexName("");
-      setIsCreating(false);
+      if (editId !== null) {
+        // Se estiver no modo de edição
+        setPokedexes(
+          pokedexes.map(pokedex =>
+            pokedex.id === editId
+              ? { ...pokedex, name: newPokedexName }
+              : pokedex
+          )
+        );
+        setEditId(null);
+      } else {
+        setPokedexes([
+          ...pokedexes,
+          { id: pokedexes.length + 1, name: newPokedexName },
+        ]);
+      }
+      setNewPokedexName(""); 
+      setIsCreating(false);  
     } else {
       alert("Por favor, insira um nome para a Pokédex.");
     }
   };
+  
 
   const handleDeletePokedex = (id) => {
     setPokedexes(pokedexes.filter((pokedex) => pokedex.id !== id));
+  };
+
+  const handleEditPokedex = (id) => {
+    const elementToEdit = pokedexes.find(pokedex => pokedex.id === id);
+    setNewPokedexName(elementToEdit.name); 
+    setEditId(id); 
+  };
+  
+  const handleUpdatePokedex = () => {
+    if (newPokedexName.trim()) {
+      setPokedexes(
+        pokedexes.map(pokedex => 
+          pokedex.id === editId 
+            ? { ...pokedex, name: newPokedexName } 
+            : pokedex
+        )
+      );
+      setNewPokedexName("");
+      setEditId(null); 
+    } else {
+      alert("Por favor, insira um nome para a Pokédex.");
+    }
   };
 
   return (
@@ -140,8 +176,8 @@ const Pokedex = () => {
               >
                 <h5>{pokedex.name}</h5>
               </Link>
-                <button onClick={() => handleDeletePokedex(pokedex.id)}>Deletar</button>
-              
+                <button className="btn btn-primary" style={{margin: "0 10px 0 0"}} onClick={() => {handleEditPokedex(pokedex.id); setIsCreating(true)}}>Editar</button>
+                <button className="btn btn-danger" onClick={() => handleDeletePokedex(pokedex.id)}>Deletar</button>
             </div>
           ))}
         </div>
